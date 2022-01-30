@@ -1,19 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Gameboard : MonoBehaviour {
-    // Start is called before the first frame update
-    void Start() {
+    private Grid grid = null;
+    public Tilemap tilemap = null;
+    public Tile hoverTile = null;
 
+    void Start() {
+        grid = gameObject.GetComponent<Grid>();
     }
 
-    // Update is called once per frame
     void Update() {
-        if (Input.GetMouseButtonDown(0)) {
-            Grid grid = gameObject.GetComponent<Grid>();
-            Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Debug.Log(grid.WorldToCell(mouseWorldPos));
-        }
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3Int tileCoordinate = grid.WorldToCell(mouseWorldPos);
+        tilemap.SetTile(tileCoordinate, hoverTile);
     }
 }
