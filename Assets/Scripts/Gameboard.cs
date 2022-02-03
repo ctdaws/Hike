@@ -21,7 +21,6 @@ public class Gameboard : MonoBehaviour {
         tilemapPosition = tilemap.cellBounds.position;
         tilemapSize = tilemap.cellBounds.size;
         selectCard = card.GetComponent<SelectCard>();
-        Debug.Log(grid.cellSize);
     }
 
     void OnMouseDown() {
