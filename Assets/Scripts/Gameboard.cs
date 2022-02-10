@@ -15,6 +15,13 @@ public class Gameboard : MonoBehaviour {
     public GameObject card = null;
     private SelectCard selectCard;
 
+    // Assuming a gameboard of 14x8
+    // TODO: change type from int to a data structure that can hold all the fields
+    // for what effects can be applied to a tile. E.g. health, buffs etc.
+    // For now, will be true if something is in the square
+    // Bottom left is 0,0
+    private bool[,] gameboardData = new bool[14, 8];
+
     void Start() {
         tilemap = gameObject.GetComponent<Tilemap>();
         grid = tilemap.layoutGrid;
@@ -29,9 +36,19 @@ public class Gameboard : MonoBehaviour {
             Vector3Int tileCell = grid.WorldToCell(mouseWorldPos);
 
             if (canPlaceCardAtCell(tileCell)) {
+                // Store the card attributes in gameboardData
+                int normalisedCellX = tileCell.x - tilemapPosition.x;
+                int normalisedCellY = tileCell.y - tilemapPosition.y;
+                gameboardData[normalisedCellX, normalisedCellY] = true;
+                // Assuming a card is 2x1
+                gameboardData[normalisedCellX, normalisedCellY - 1] = true;
+
+                // Move the card to overlay the tilemap
                 float cellHeight = grid.cellSize.y;
                 // This line is assuming 2x1 card in vertical position
                 card.transform.position = (tilemap.GetCellCenterWorld(tileCell) + new Vector3(0f, -(cellHeight / 2), 0f));
+                selectCard.isPlaced = true;
+                DEBUG_logGameboardData();
             }
         }
     }
@@ -55,5 +72,14 @@ public class Gameboard : MonoBehaviour {
             return tileCell.y > tilemapPosition.y;
         }
         return false;
+    }
+
+    // This sucks lol
+    void DEBUG_logGameboardData() {
+        for (int i = 0; i < gameboardData.GetLength(0); i++) {
+            for (int j = 0; j < gameboardData.GetLength(1); j++) {
+                Debug.Log("x " + i + " y " + j + " : " + gameboardData[i,j]);
+            }
+        }
     }
 }
