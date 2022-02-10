@@ -48,7 +48,6 @@ public class Gameboard : MonoBehaviour {
                 // This line is assuming 2x1 card in vertical position
                 card.transform.position = (tilemap.GetCellCenterWorld(tileCell) + new Vector3(0f, -(cellHeight / 2), 0f));
                 selectCard.isPlaced = true;
-                DEBUG_logGameboardData();
             }
         }
     }
