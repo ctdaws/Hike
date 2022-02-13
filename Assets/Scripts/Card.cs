@@ -2,9 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SelectCard : MonoBehaviour {
+public class Card : MonoBehaviour {
     public bool isSelected = false;
     public bool isPlaced = false;
+
+    public CardData data;
+
+    private BoxCollider2D col;
+
+    void Start() {
+        col = gameObject.GetComponent<BoxCollider2D>();
+    }
 
     // TODO: calling update just for this may be bad for performance,
     // though not worth worrying about this yet as all this code may get deleted
@@ -21,6 +29,7 @@ public class SelectCard : MonoBehaviour {
     void OnMouseDown() {
         if (!isPlaced) {
             isSelected = true;
+            col.enabled = false;
         }
     }
 }

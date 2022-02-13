@@ -4,12 +4,4 @@ using UnityEngine;
 
 public class Hand : MonoBehaviour {
     public GameObject[] cards;
-
-    void Start() {
-
-    }
-
-    void Update() {
-
-    }
 }
