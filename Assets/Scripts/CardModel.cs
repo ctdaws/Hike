@@ -1,4 +1,4 @@
 [System.Serializable]
-public class CardData {
+public class CardModel {
     public int health;
 }

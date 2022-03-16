@@ -15,7 +15,7 @@ public class Gameboard : MonoBehaviour {
 
     // Assuming a gameboard of 14x8
     // Bottom left is 0,0
-    public CardData[,] gameboardData = new CardData[14, 8];
+    public CardModel[,] gameboardData = new CardModel[14, 8];
 
     void Start() {
         tilemap = gameObject.GetComponent<Tilemap>();

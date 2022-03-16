@@ -6,7 +6,7 @@ public class Card : MonoBehaviour {
     public bool isSelected = false;
     public bool isPlaced = false;
 
-    public CardData data;
+    public CardModel data;
 
     private BoxCollider2D col;
 
