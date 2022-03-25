@@ -54,6 +54,7 @@ public class Gameboard : MonoBehaviour {
                         if (newEnergy > energyMeterScript.maxEnergy) {
                             energyMeterScript.energy = energyMeterScript.maxEnergy;
                         }
+                        Destroy(card);
                     }
                 }
             }
