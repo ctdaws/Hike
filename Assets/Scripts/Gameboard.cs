@@ -13,6 +13,9 @@ public class Gameboard : MonoBehaviour {
     public GameObject hand;
     private Hand handScript;
 
+    public GameObject energyMeter;
+    private EnergyMeter energyMeterScript;
+
     // Assuming a gameboard of 14x8
     // Bottom left is 0,0
     public CardModel[,] gameboardData = new CardModel[14, 8];
@@ -23,6 +26,7 @@ public class Gameboard : MonoBehaviour {
         tilemapPosition = tilemap.cellBounds.position;
         tilemapSize = tilemap.cellBounds.size;
         handScript = hand.GetComponent<Hand>();
+        energyMeterScript = energyMeter.GetComponent<EnergyMeter>();
     }
 
     void OnMouseDown() {
@@ -41,6 +45,16 @@ public class Gameboard : MonoBehaviour {
                     // Move the card to overlay the tilemap
                     card.transform.position = tilemap.GetCellCenterWorld(tileCell);
                     cardScript.isPlaced = true;
+
+                    // Manage energy
+                    if (cardScript.cardType != CardTypes.FOOD) {
+                        energyMeterScript.energy--;
+                    } else {
+                        int newEnergy = energyMeterScript.energy += cardScript.data.energyRestored;
+                        if (newEnergy > energyMeterScript.maxEnergy) {
+                            energyMeterScript.energy = energyMeterScript.maxEnergy;
+                        }
+                    }
                 }
             }
         }

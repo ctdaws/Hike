@@ -305,8 +305,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isSelected: 0
   isPlaced: 0
+  cardType: 0
   data:
     health: 2
+    energyRestored: 0
 --- !u!61 &299736307
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -631,8 +633,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isSelected: 0
   isPlaced: 0
+  cardType: 1
   data:
     health: 3
+    energyRestored: 0
 --- !u!61 &717425083
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2108,6 +2112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hand: {fileID: 467916229}
+  energyMeter: {fileID: 1848672792}
 --- !u!1 &1293691111
 GameObject:
   m_ObjectHideFlags: 0
@@ -2155,8 +2160,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isSelected: 0
   isPlaced: 0
+  cardType: 0
   data:
     health: 1
+    energyRestored: 0
 --- !u!61 &1293691114
 BoxCollider2D:
   m_ObjectHideFlags: 0

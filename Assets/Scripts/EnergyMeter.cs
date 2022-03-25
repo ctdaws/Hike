@@ -10,10 +10,9 @@ public class EnergyMeter : MonoBehaviour {
     void Start() {
         maxEnergy = 10;
         energy = maxEnergy;
-        textMesh.text = "Beans: " + energy.ToString() + "/" + maxEnergy.ToString();
     }
 
     void Update() {
-
+        textMesh.text = "Beans: " + energy.ToString() + "/" + maxEnergy.ToString();
     }
 }

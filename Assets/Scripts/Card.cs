@@ -6,12 +6,25 @@ public class Card : MonoBehaviour {
     public bool isSelected = false;
     public bool isPlaced = false;
 
+    public CardTypes cardType;
+
     public CardModel data;
 
     private BoxCollider2D col;
 
     void Start() {
         col = gameObject.GetComponent<BoxCollider2D>();
+        switch (cardType) {
+            case CardTypes.TARP:
+                data = CardsData.getTarp();
+                // For testing, colour the card
+                gameObject.GetComponent<SpriteRenderer>().color = Color.green;
+                break;
+            case CardTypes.FOOD:
+                data = CardsData.getFood();
+                gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+                break;
+        }
     }
 
     // TODO: calling update just for this may be bad for performance,
