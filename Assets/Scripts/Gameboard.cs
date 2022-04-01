@@ -56,6 +56,10 @@ public class Gameboard : MonoBehaviour {
                         }
                         Destroy(card);
                     }
+
+                    handScript.cards.Remove(card);
+                    handScript.moveCards();
+                    break;
                 }
             }
         }
