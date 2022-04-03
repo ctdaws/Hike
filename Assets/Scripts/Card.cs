@@ -12,6 +12,12 @@ public class Card : MonoBehaviour {
 
     void Start() {
         col = gameObject.GetComponent<BoxCollider2D>();
+        InitialiseCard(cardType);
+    }
+
+    public void InitialiseCard(CardTypes cardType) {
+        this.cardType = cardType;
+
         switch (cardType) {
             case CardTypes.TARP:
                 data = CardsData.getTarp();
