@@ -24,12 +24,28 @@ public class Card : MonoBehaviour {
                 textMesh.text = "Tarp";
                 break;
             case CardTypes.ENERGY_BAR:
-                data = CardsData.getFood();
+                data = CardsData.getEnergyBar();
                 textMesh.text = "Energy Bar";
                 break;
             case CardTypes.FIRELIGHTER:
                 data = CardsData.getFirelighter();
                 textMesh.text = "Firelighter";
+                break;
+            case CardTypes.UNCOOKED_BEANS:
+                data = CardsData.getUncookedBeans();
+                textMesh.text = "Uncooked Beans";
+                break;
+            case CardTypes.COOKED_BEANS:
+                data = CardsData.getCookedBeans();
+                textMesh.text = "Cooked Beans";
+                break;
+            case CardTypes.TREE:
+                data = CardsData.getTree();
+                textMesh.text = "Tree";
+                break;
+            case CardTypes.CAMPFIRE:
+                data = CardsData.getCampfire();
+                textMesh.text = "Campfire";
                 break;
         }
     }
