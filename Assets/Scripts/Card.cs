@@ -12,7 +12,6 @@ public class Card : MonoBehaviour {
 
     void Start() {
         col = gameObject.GetComponent<BoxCollider2D>();
-        InitialiseCard(cardType);
     }
 
     public void InitialiseCard(CardTypes cardType) {

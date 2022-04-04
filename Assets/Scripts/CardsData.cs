@@ -6,7 +6,9 @@ public enum CardTypes {
 public static class CardsData {
     public static CardModel getTarp() {
         CardModel card = new CardModel();
-        card.health = 30;
+        card.attack = 0;
+        card.health = 3;
+        card.defense = 0;
         return card;
     }
 
