@@ -9,6 +9,7 @@ public class Card : MonoBehaviour {
     public CardModel data;
 
     private BoxCollider2D col;
+    public TMPro.TextMeshProUGUI textMesh;
 
     void Start() {
         col = gameObject.GetComponent<BoxCollider2D>();
@@ -20,12 +21,15 @@ public class Card : MonoBehaviour {
         switch (cardType) {
             case CardTypes.TARP:
                 data = CardsData.getTarp();
-                // For testing, colour the card
-                gameObject.GetComponent<SpriteRenderer>().color = Color.green;
+                textMesh.text = "Tarp";
                 break;
-            case CardTypes.FOOD:
+            case CardTypes.ENERGY_BAR:
                 data = CardsData.getFood();
-                gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+                textMesh.text = "Energy Bar";
+                break;
+            case CardTypes.FIRELIGHTER:
+                data = CardsData.getFirelighter();
+                textMesh.text = "Firelighter";
                 break;
         }
     }

@@ -8,7 +8,6 @@ public class Hand : MonoBehaviour {
     public void moveCards() {
         for (int i = 0; i < cards.Count; i++) {
             cards[i].transform.localPosition = new Vector3((i * 1.5f), 0, -1f);
-
         }
     }
 }

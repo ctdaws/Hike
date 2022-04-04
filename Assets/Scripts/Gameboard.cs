@@ -47,7 +47,7 @@ public class Gameboard : MonoBehaviour {
                     cardScript.isPlaced = true;
 
                     // Manage energy
-                    if (cardScript.cardType != CardTypes.FOOD) {
+                    if (cardScript.cardType != CardTypes.ENERGY_BAR) {
                         energyMeterScript.energy--;
                     } else {
                         int newEnergy = energyMeterScript.energy += cardScript.data.energyRestored;
