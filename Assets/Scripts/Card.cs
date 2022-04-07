@@ -13,6 +13,7 @@ public class Card : MonoBehaviour {
 
     void Start() {
         col = gameObject.GetComponent<BoxCollider2D>();
+        InitialiseCard(cardType);
     }
 
     public void InitialiseCard(CardTypes cardType) {
@@ -46,6 +47,10 @@ public class Card : MonoBehaviour {
             case CardTypes.CAMPFIRE:
                 data = CardsData.getCampfire();
                 textMesh.text = "Campfire";
+                break;
+            case CardTypes.AXE:
+                data = CardsData.getAxe();
+                textMesh.text = "Axe";
                 break;
         }
     }

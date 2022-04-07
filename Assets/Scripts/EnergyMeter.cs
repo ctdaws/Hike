@@ -13,4 +13,13 @@ public class EnergyMeter : MonoBehaviour {
     void Update() {
         textMesh.text = "Beans: " + energy.ToString() + "/" + maxEnergy.ToString();
     }
+
+    public void UpdateEnergy(int amount) {
+        energy += amount;
+        if (energy > maxEnergy) {
+            energy = maxEnergy;
+        } else if (energy < 0) {
+            energy = 0;
+        }
+    }
 }
