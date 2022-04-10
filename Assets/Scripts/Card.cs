@@ -4,21 +4,18 @@ public class Card : MonoBehaviour {
     public bool isSelected = false;
     public bool isPlaced = false;
 
-    public CardTypes cardType;
-
     public CardModel data;
+    public Vector2Int tilemapPosition;
 
     private BoxCollider2D col;
     public TMPro.TextMeshProUGUI textMesh;
 
     void Start() {
         col = gameObject.GetComponent<BoxCollider2D>();
-        InitialiseCard(cardType);
+        InitialiseCard(data.type);
     }
 
     public void InitialiseCard(CardTypes cardType) {
-        this.cardType = cardType;
-
         switch (cardType) {
             case CardTypes.TARP:
                 data = CardsData.getTarp();
@@ -51,6 +48,10 @@ public class Card : MonoBehaviour {
             case CardTypes.AXE:
                 data = CardsData.getAxe();
                 textMesh.text = "Axe";
+                break;
+            case CardTypes.WOOD:
+                data = CardsData.getWood();
+                textMesh.text = "Wood";
                 break;
         }
     }

@@ -172,9 +172,19 @@ PrefabInstance:
       propertyPath: m_Name
       value: Card
       objectReference: {fileID: 0}
+    - target: {fileID: 3961988455924517348, guid: 3c825ca043609445ea180b7a6d8acd98,
+        type: 3}
+      propertyPath: m_TagString
+      value: Card
+      objectReference: {fileID: 0}
     - target: {fileID: 3961988455924517354, guid: 3c825ca043609445ea180b7a6d8acd98,
         type: 3}
       propertyPath: cardType
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3961988455924517354, guid: 3c825ca043609445ea180b7a6d8acd98,
+        type: 3}
+      propertyPath: data.type
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8733127398427005178, guid: 3c825ca043609445ea180b7a6d8acd98,
@@ -500,7 +510,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 467916229}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.62, y: -3.89, z: -1}
+  m_LocalPosition: {x: -7.62, y: -3.89, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2193,6 +2203,7 @@ MonoBehaviour:
   hand: {fileID: 467916229}
   energyMeter: {fileID: 1848672792}
   cardPrefab: {fileID: 374888580}
+  weaponSlot: {fileID: 2609318}
 --- !u!1 &1692424169
 GameObject:
   m_ObjectHideFlags: 0
