@@ -49,10 +49,20 @@ public class Gameboard : MonoBehaviour {
             } else if (cardScript.data.type == CardTypes.WOOD) {
                 GameObject selectedCard = GetSelectedCard();
                 if (selectedCard != null) {
-                    if (selectedCard.GetComponent<Card>().data.type == CardTypes.FIRELIGHTER && cardScript.data.type == CardTypes.WOOD)  {
+                    if (selectedCard.GetComponent<Card>().data.type == CardTypes.FIRELIGHTER)  {
+                        handScript.cards.Remove(selectedCard);
                         Destroy(selectedCard);
                         cardScript.InitialiseCard(CardTypes.CAMPFIRE);
                         gameboardData[cardScript.tilemapPosition.x, cardScript.tilemapPosition.y] = cardScript.data;
+                    }
+                }
+            } else if (cardScript.data.type == CardTypes.CAMPFIRE) {
+                GameObject selectedCard = GetSelectedCard();
+                if (selectedCard != null) {
+                    if (selectedCard.GetComponent<Card>().data.type == CardTypes.UNCOOKED_BEANS)  {
+                        handScript.cards.Remove(selectedCard);
+                        Destroy(selectedCard);
+                        CreateCardInHand(CardTypes.COOKED_BEANS);
                     }
                 }
             }
