@@ -50,6 +50,7 @@ public class Gameboard : MonoBehaviour {
                 GameObject selectedCard = GetSelectedCard();
                 if (selectedCard != null) {
                     if (selectedCard.GetComponent<Card>().data.type == CardTypes.FIRELIGHTER)  {
+                        energyMeterScript.UpdateEnergy(selectedCard.GetComponent<Card>().data.energyChange);
                         handScript.cards.Remove(selectedCard);
                         handScript.moveCards();
                         Destroy(selectedCard);
@@ -61,6 +62,7 @@ public class Gameboard : MonoBehaviour {
                 GameObject selectedCard = GetSelectedCard();
                 if (selectedCard != null) {
                     if (selectedCard.GetComponent<Card>().data.type == CardTypes.UNCOOKED_BEANS)  {
+                        // energyMeterScript.UpdateEnergy(selectedCard.GetComponent<Card>().data.energyChange);
                         handScript.cards.Remove(selectedCard);
                         Destroy(selectedCard);
                         CreateCardInHand(CardTypes.COOKED_BEANS);
