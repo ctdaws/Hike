@@ -49,7 +49,8 @@ public class Gameboard : MonoBehaviour {
                     gameboardData[normalisedCellX, normalisedCellY] = cardScript.data;
 
                     // Move the card to overlay the tilemap
-                    card.transform.position = tilemap.GetCellCenterWorld(tileCell);
+                    card.transform.position = tilemap.GetCellCenterWorld(tileCell) + new Vector3(0, 0, -1);
+                    card.transform.SetParent(tilemap.transform);
                     cardScript.isPlaced = true;
 
                     // Manage energy
