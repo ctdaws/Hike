@@ -46,6 +46,15 @@ public class Gameboard : MonoBehaviour {
                 Destroy(cardUnderCursor);
                 energyMeterScript.UpdateEnergy(weaponSlot.GetComponentInChildren<Card>().data.energyChange);
                 CreateCardInHand(CardTypes.WOOD);
+            } else if (cardScript.data.type == CardTypes.WOOD) {
+                GameObject selectedCard = GetSelectedCard();
+                if (selectedCard != null) {
+                    if (selectedCard.GetComponent<Card>().data.type == CardTypes.FIRELIGHTER && cardScript.data.type == CardTypes.WOOD)  {
+                        Destroy(selectedCard);
+                        cardScript.InitialiseCard(CardTypes.CAMPFIRE);
+                        gameboardData[cardScript.tilemapPosition.x, cardScript.tilemapPosition.y] = cardScript.data;
+                    }
+                }
             }
         } else {
             foreach(GameObject card in handScript.cards) {
@@ -66,6 +75,10 @@ public class Gameboard : MonoBehaviour {
                 }
             }
         }
+    }
+
+    GameObject GetSelectedCard() {
+        return handScript.cards.Find(c => c.GetComponent<Card>().isSelected == true);
     }
 
     // Returns true if the card can be placed at the tile, false otherwise
