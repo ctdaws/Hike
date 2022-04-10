@@ -24,6 +24,8 @@ public class Gameboard : MonoBehaviour {
 
     public GameObject cardPrefab;
 
+    public GameObject weaponSlot;
+
     void Start() {
         tilemap = gameObject.GetComponent<Tilemap>();
         grid = tilemap.layoutGrid;
@@ -42,6 +44,7 @@ public class Gameboard : MonoBehaviour {
             if (cardScript.data.type == CardTypes.TREE) {
                 gameboardData[cardScript.tilemapPosition.x, cardScript.tilemapPosition.y] = new CardModel();
                 Destroy(cardUnderCursor);
+                energyMeterScript.UpdateEnergy(weaponSlot.GetComponentInChildren<Card>().data.energyChange);
                 CreateCardInHand(CardTypes.WOOD);
             }
         } else {

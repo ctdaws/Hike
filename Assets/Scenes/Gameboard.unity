@@ -2153,6 +2153,7 @@ MonoBehaviour:
   hand: {fileID: 467916229}
   energyMeter: {fileID: 1848672792}
   cardPrefab: {fileID: 374888580}
+  weaponSlot: {fileID: 2609318}
 --- !u!1 &1692424169
 GameObject:
   m_ObjectHideFlags: 0
