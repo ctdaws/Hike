@@ -7,6 +7,7 @@ public enum CardTypes {
     TREE,
     CAMPFIRE,
     AXE,
+    WOOD,
 }
 
 public static class CardsData {
@@ -71,6 +72,14 @@ public static class CardsData {
         CardModel card = new CardModel();
         card.type = CardTypes.AXE;
         card.attack = 1;
+        card.energyChange = -1;
+        return card;
+    }
+
+    public static CardModel getWood() {
+        CardModel card = new CardModel();
+        card.type = CardTypes.WOOD;
+        card.health = 1;
         card.energyChange = -1;
         return card;
     }

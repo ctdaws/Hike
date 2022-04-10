@@ -5,6 +5,7 @@ public class Card : MonoBehaviour {
     public bool isPlaced = false;
 
     public CardModel data;
+    public Vector2Int tilemapPosition;
 
     private BoxCollider2D col;
     public TMPro.TextMeshProUGUI textMesh;
@@ -47,6 +48,10 @@ public class Card : MonoBehaviour {
             case CardTypes.AXE:
                 data = CardsData.getAxe();
                 textMesh.text = "Axe";
+                break;
+            case CardTypes.WOOD:
+                data = CardsData.getWood();
+                textMesh.text = "Wood";
                 break;
         }
     }

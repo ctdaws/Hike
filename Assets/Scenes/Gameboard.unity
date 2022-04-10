@@ -172,6 +172,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Card
       objectReference: {fileID: 0}
+    - target: {fileID: 3961988455924517348, guid: 3c825ca043609445ea180b7a6d8acd98,
+        type: 3}
+      propertyPath: m_TagString
+      value: Card
+      objectReference: {fileID: 0}
     - target: {fileID: 3961988455924517354, guid: 3c825ca043609445ea180b7a6d8acd98,
         type: 3}
       propertyPath: cardType

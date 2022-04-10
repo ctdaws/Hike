@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -35,20 +36,30 @@ public class Gameboard : MonoBehaviour {
     }
 
     void OnMouseDown() {
-        foreach(GameObject card in handScript.cards) {
-            Card cardScript = card.GetComponent<Card>();
-            if (cardScript.isSelected) {
-                if (MoveCardToTileAtMousePosition(card, cardScript)) {
-                    // Manage energy
-                    energyMeterScript.UpdateEnergy(cardScript.data.energyChange);
-                    List<CardTypes> foodCards = new List<CardTypes>{CardTypes.UNCOOKED_BEANS, CardTypes.COOKED_BEANS, CardTypes.ENERGY_BAR};
-                    if (foodCards.Contains(cardScript.data.type)) {
-                        Destroy(card);
-                    }
+        GameObject cardUnderCursor = GetCardAtMousePosition();
+        if (cardUnderCursor != null) {
+            Card cardScript = cardUnderCursor.GetComponent<Card>();
+            if (cardScript.data.type == CardTypes.TREE) {
+                gameboardData[cardScript.tilemapPosition.x, cardScript.tilemapPosition.y] = new CardModel();
+                Destroy(cardUnderCursor);
+                CreateCardInHand(CardTypes.WOOD);
+            }
+        } else {
+            foreach(GameObject card in handScript.cards) {
+                Card cardScript = card.GetComponent<Card>();
+                if (cardScript.isSelected) {
+                    if (MoveCardToTileAtMousePosition(card, cardScript)) {
+                        // Manage energy
+                        energyMeterScript.UpdateEnergy(cardScript.data.energyChange);
+                        List<CardTypes> foodCards = new List<CardTypes>{CardTypes.UNCOOKED_BEANS, CardTypes.COOKED_BEANS, CardTypes.ENERGY_BAR};
+                        if (foodCards.Contains(cardScript.data.type)) {
+                            Destroy(card);
+                        }
 
-                    handScript.cards.Remove(card);
-                    handScript.moveCards();
-                    break;
+                        handScript.cards.Remove(card);
+                        handScript.moveCards();
+                        break;
+                    }
                 }
             }
         }
@@ -66,11 +77,37 @@ public class Gameboard : MonoBehaviour {
         int normalisedCellX = tileCell.x - tilemapPosition.x;
         int normalisedCellY = tileCell.y - tilemapPosition.y;
         gameboardData[normalisedCellX, normalisedCellY] = cardScript.data;
+        cardScript.tilemapPosition = new Vector2Int(normalisedCellX, normalisedCellY);
 
         card.transform.position = tilemap.GetCellCenterWorld(tileCell) + new Vector3(0, 0, -1);
         card.transform.SetParent(tilemap.transform);
         cardScript.isPlaced = true;
+        card.GetComponent<BoxCollider2D>().enabled = false;
         return true;
+    }
+
+    GameObject GetCardAtMousePosition() {
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3Int tileCell = grid.WorldToCell(mouseWorldPos);
+
+        if (!IsCellInBounds(tileCell)) {
+            return null;
+        }
+
+        int normalisedCellX = tileCell.x - tilemapPosition.x;
+        int normalisedCellY = tileCell.y - tilemapPosition.y;
+        Vector2 v = new Vector2(normalisedCellX, normalisedCellY);
+        List<Transform> ts = new List<Transform>();
+
+        foreach (Transform child in gameObject.transform) {
+            ts.Add(child);
+        }
+
+        Transform g = ts.Find(t => t.gameObject.GetComponent<Card>().tilemapPosition == v);
+        if (g == null) {
+            return null;
+        }
+        return g.gameObject;
     }
 
     CardModel GetTileDataAtMousePosition() {
@@ -93,10 +130,22 @@ public class Gameboard : MonoBehaviour {
 
         if (IsCellInBounds(cell)) {
             Card cardScript = card.GetComponent<Card>();
+            cardScript.tilemapPosition = new Vector2Int(cellX, cellY);
             gameboardData[cellX, cellY] = cardScript.data;
 
             card.transform.position = grid.GetCellCenterWorld(cell) + new Vector3(0, 0, -1);
         }
+    }
+
+    void CreateCardInHand(CardTypes cardType) {
+        GameObject card = Instantiate(cardPrefab, Vector3.zero, Quaternion.identity, hand.transform);
+        Card cardScript = card.GetComponent<Card>();
+        cardScript.InitialiseCard(cardType);
+
+        float cardX = handScript.cards.Count * 1.5f;
+        card.transform.localPosition = new Vector3(cardX, 0f, handScript.transform.position.z);
+
+        handScript.cards.Add(card);
     }
 
     CardModel CreateCardAtCellPosition(CardTypes cardType, int cellX, int cellY) {
@@ -104,6 +153,8 @@ public class Gameboard : MonoBehaviour {
         Card cardScript = card.GetComponent<Card>();
         cardScript.InitialiseCard(cardType);
         PlaceCardAtCell(card, cellX, cellY);
+        cardScript.isPlaced = true;
+        card.GetComponent<BoxCollider2D>().enabled = false;
         return cardScript.data;
     }
 
