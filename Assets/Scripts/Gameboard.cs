@@ -51,6 +51,7 @@ public class Gameboard : MonoBehaviour {
                 if (selectedCard != null) {
                     if (selectedCard.GetComponent<Card>().data.type == CardTypes.FIRELIGHTER)  {
                         handScript.cards.Remove(selectedCard);
+                        handScript.moveCards();
                         Destroy(selectedCard);
                         cardScript.InitialiseCard(CardTypes.CAMPFIRE);
                         gameboardData[cardScript.tilemapPosition.x, cardScript.tilemapPosition.y] = cardScript.data;
@@ -63,6 +64,7 @@ public class Gameboard : MonoBehaviour {
                         handScript.cards.Remove(selectedCard);
                         Destroy(selectedCard);
                         CreateCardInHand(CardTypes.COOKED_BEANS);
+                        handScript.moveCards();
                     }
                 }
             }

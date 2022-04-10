@@ -39,7 +39,7 @@ public static class CardsData {
     public static CardModel getUncookedBeans() {
         CardModel card = new CardModel();
         card.type = CardTypes.UNCOOKED_BEANS;
-        card.energyChange = -1;
+        card.energyChange = 1;
         return card;
     }
 
