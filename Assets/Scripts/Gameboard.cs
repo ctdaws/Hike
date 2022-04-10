@@ -38,25 +38,11 @@ public class Gameboard : MonoBehaviour {
         foreach(GameObject card in handScript.cards) {
             Card cardScript = card.GetComponent<Card>();
             if (cardScript.isSelected) {
-                Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                Vector3Int tileCell = grid.WorldToCell(mouseWorldPos);
-
-                if (IsCellInBounds(tileCell)) {
-                    // Store the card attributes in gameboardData
-                    // TODO: I think this should be plus not minus, need to double check
-                    int normalisedCellX = tileCell.x - tilemapPosition.x;
-                    int normalisedCellY = tileCell.y - tilemapPosition.y;
-                    gameboardData[normalisedCellX, normalisedCellY] = cardScript.data;
-
-                    // Move the card to overlay the tilemap
-                    card.transform.position = tilemap.GetCellCenterWorld(tileCell) + new Vector3(0, 0, -1);
-                    card.transform.SetParent(tilemap.transform);
-                    cardScript.isPlaced = true;
-
+                if (MoveCardToTileAtMousePosition(card, cardScript)) {
                     // Manage energy
                     energyMeterScript.UpdateEnergy(cardScript.data.energyChange);
                     List<CardTypes> foodCards = new List<CardTypes>{CardTypes.UNCOOKED_BEANS, CardTypes.COOKED_BEANS, CardTypes.ENERGY_BAR};
-                    if (foodCards.Contains(cardScript.cardType)) {
+                    if (foodCards.Contains(cardScript.data.type)) {
                         Destroy(card);
                     }
 
@@ -68,9 +54,41 @@ public class Gameboard : MonoBehaviour {
         }
     }
 
+    // Returns true if the card can be placed at the tile, false otherwise
+    bool MoveCardToTileAtMousePosition(GameObject card, Card cardScript) {
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3Int tileCell = grid.WorldToCell(mouseWorldPos);
+
+        if (!IsCellInBounds(tileCell)) {
+            return false;
+        }
+
+        int normalisedCellX = tileCell.x - tilemapPosition.x;
+        int normalisedCellY = tileCell.y - tilemapPosition.y;
+        gameboardData[normalisedCellX, normalisedCellY] = cardScript.data;
+
+        card.transform.position = tilemap.GetCellCenterWorld(tileCell) + new Vector3(0, 0, -1);
+        card.transform.SetParent(tilemap.transform);
+        cardScript.isPlaced = true;
+        return true;
+    }
+
+    CardModel GetTileDataAtMousePosition() {
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3Int tileCell = grid.WorldToCell(mouseWorldPos);
+
+        if (!IsCellInBounds(tileCell)) {
+            return null;
+        }
+
+        int normalisedCellX = tileCell.x - tilemapPosition.x;
+        int normalisedCellY = tileCell.y - tilemapPosition.y;
+        return gameboardData[normalisedCellX, normalisedCellY];
+    }
+
     void PlaceCardAtCell(GameObject card, int cellX, int cellY) {
-        int normalisedCellX = cellX + tilemapPosition.x;
-        int normalisedCellY = cellY + tilemapPosition.y;
+        int normalisedCellX = tilemapPosition.x + cellX;
+        int normalisedCellY = tilemapPosition.y + cellY;
         Vector3Int cell = new Vector3Int(normalisedCellX, normalisedCellY, 0);
 
         if (IsCellInBounds(cell)) {

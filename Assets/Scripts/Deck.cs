@@ -15,8 +15,8 @@ public class Deck : MonoBehaviour {
     }
 
     void GenerateDeck() {
-        c.Enqueue(CardTypes.FIRELIGHTER);
         c.Enqueue(CardTypes.TARP);
+        c.Enqueue(CardTypes.FIRELIGHTER);
         c.Enqueue(CardTypes.ENERGY_BAR);
         c.Enqueue(CardTypes.TARP);
         c.Enqueue(CardTypes.TARP);

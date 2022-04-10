@@ -1,5 +1,6 @@
 [System.Serializable]
 public class CardModel {
+    public CardTypes type;
     public int health;
     public int attack;
     public int defense;

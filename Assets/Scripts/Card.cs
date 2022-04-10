@@ -4,8 +4,6 @@ public class Card : MonoBehaviour {
     public bool isSelected = false;
     public bool isPlaced = false;
 
-    public CardTypes cardType;
-
     public CardModel data;
 
     private BoxCollider2D col;
@@ -13,12 +11,10 @@ public class Card : MonoBehaviour {
 
     void Start() {
         col = gameObject.GetComponent<BoxCollider2D>();
-        InitialiseCard(cardType);
+        InitialiseCard(data.type);
     }
 
     public void InitialiseCard(CardTypes cardType) {
-        this.cardType = cardType;
-
         switch (cardType) {
             case CardTypes.TARP:
                 data = CardsData.getTarp();
