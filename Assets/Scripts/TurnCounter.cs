@@ -13,6 +13,6 @@ public class TurnCounter : MonoBehaviour {
     }
 
     public void IncrementTurnCounter() {
-        turnCounter ++;
+        turnCounter++;
     }
 }

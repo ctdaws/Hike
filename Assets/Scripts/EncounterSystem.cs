@@ -2,14 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum EncounterState {START, PLAYERTURN, ENEMYTURN}
+public enum EncounterState {
+    START,
+    PLAYERTURN,
+    ENEMYTURN
+}
 
-public class EncounterSystem : MonoBehaviour
-{
+public class EncounterSystem : MonoBehaviour {
     public EncounterState state;
     public GameObject turnCounter;
     private TurnCounter turnCounterScript;
-    
+
     // Start is called before the first frame update
     void Start() {
         state = EncounterState.START;
@@ -27,7 +30,7 @@ public class EncounterSystem : MonoBehaviour
         state = EncounterState.PLAYERTURN;
         turnCounterScript.IncrementTurnCounter();
         // draw 1 card
-        // TODO: add card to hand at start of turn instead of click to draw, 
+        // TODO: add card to hand at start of turn instead of click to draw,
         // fix issue where it tries to add card to hand before deck queue is filled
         // play 1 card
         // TODO: add check for if a card has been played this turn

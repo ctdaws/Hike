@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -56,6 +56,17 @@ public class Gameboard : MonoBehaviour {
                         Destroy(selectedCard);
                         cardScript.InitialiseCard(CardTypes.CAMPFIRE);
                         gameboardData[cardScript.tilemapPosition.x, cardScript.tilemapPosition.y] = cardScript.data;
+                        // Campfire light radius
+                        Vector3Int tileCell = grid.WorldToCell(cardUnderCursor.transform.position);
+                        var tiles = GetTilesInRadius(tileCell, 2);
+                        foreach (var tile in tiles) {
+                            // Flag the tile, inidicating that it can change colour.
+                            // By default it's set to "Lock Colour".
+                            tilemap.SetTileFlags(tile, TileFlags.None);
+
+                            // Set the colour.
+                            tilemap.SetColor(tile, Color.red);
+                        }
                     }
                 }
             } else if (cardScript.data.type == CardTypes.CAMPFIRE) {
@@ -218,6 +229,20 @@ public class Gameboard : MonoBehaviour {
         } else {
             return false;
         }
+    }
+
+    List<Vector3Int> GetTilesInRadius(Vector3Int tileCell, int radius) {
+        var topLeftX = tileCell.x - radius;
+        var topLeftY = tileCell.y + radius;
+
+        var tilesCoords = new List<Vector3Int>();
+        foreach (var x in Enumerable.Range(0, (radius * 2) + 1)) {
+            foreach (var y in Enumerable.Range(0, (radius * 2) + 1)) {
+                tilesCoords.Add(new Vector3Int(topLeftX + x, topLeftY - y, 0));
+            }
+        }
+
+        return tilesCoords;
     }
 
     // This sucks lol
