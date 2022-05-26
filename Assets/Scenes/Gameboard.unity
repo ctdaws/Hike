@@ -699,6 +699,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cards: []
+  cardPrefab: {fileID: 3961988455924517348, guid: 3c825ca043609445ea180b7a6d8acd98,
+    type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -2421,6 +2423,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da872bbe687f3430d8a8ed9d7c737926, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tilemap: {fileID: 1187294084}
+  grid: {fileID: 1880128812}
   hand: {fileID: 467916229}
   energyMeter: {fileID: 1848672792}
   cardPrefab: {fileID: 374888580}
