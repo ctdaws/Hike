@@ -25,5 +25,11 @@ public class Hand : MonoBehaviour {
         card.transform.localPosition = new Vector3(cardX, 0f, gameObject.transform.position.z);
 
         cards.Add(card);
+        moveCards();
+    }
+
+    public void RemoveCard(GameObject card) {
+        cards.Remove(card);
+        moveCards();
     }
 }

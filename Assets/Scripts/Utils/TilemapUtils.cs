@@ -57,7 +57,7 @@ public static class TilemapUtils {
     }
 
     // Returns true if the card can be placed at the tile, false otherwise
-    public static bool MoveCardToTileAtMousePosition(GameObject card, Card cardScript) {
+    public static bool MoveCardToTileAtMousePosition(GameObject card) {
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector3Int tileCell = grid.WorldToCell(mouseWorldPos);
 
@@ -65,6 +65,7 @@ public static class TilemapUtils {
             return false;
         }
 
+        var cardScript = card.GetComponent<Card>();
         int normalisedCellX = tileCell.x - tilemapPosition.x;
         int normalisedCellY = tileCell.y - tilemapPosition.y;
         gameboardData[normalisedCellX, normalisedCellY] = cardScript.data;

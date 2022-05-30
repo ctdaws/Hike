@@ -14,8 +14,11 @@ public class EnergyMeter : MonoBehaviour {
         textMesh.text = "Beans: " + energy.ToString() + "/" + maxEnergy.ToString();
     }
 
-    public void UpdateEnergy(int amount) {
-        energy += amount;
+    public void ProcessEnergyCost(GameObject card) {
+        var cardScript = card.GetComponent<Card>();
+
+        energy += cardScript.data.energyChange;
+
         if (energy > maxEnergy) {
             energy = maxEnergy;
         } else if (energy < 0) {
