@@ -881,6 +881,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textMesh: {fileID: 263458909}
   turnCounter: 0
+  tilemap: {fileID: 1187294081}
+  deck: {fileID: 1082980536}
 --- !u!224 &822579355
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2427,6 +2429,7 @@ MonoBehaviour:
   grid: {fileID: 1880128812}
   hand: {fileID: 467916229}
   energyMeter: {fileID: 1848672792}
+  turnCounter: {fileID: 822579351}
   cardPrefab: {fileID: 374888580}
   weaponSlot: {fileID: 2609318}
 --- !u!1 &1692424169
@@ -2666,7 +2669,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcb9b8493f2334237ac638f84890fcf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  encounterSystem: {fileID: 247212078}
+  turnCounter: {fileID: 822579351}
 --- !u!61 &2029420987
 BoxCollider2D:
   m_ObjectHideFlags: 0

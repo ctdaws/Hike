@@ -10,4 +10,5 @@ public class CardModel {
     // TODO: do we need these bools, or do we need a card type system eg fuel cards and food cards etc
     public bool isAttackable;
     public bool isCookable;
+    public int lifetime;
 }

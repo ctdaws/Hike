@@ -12,6 +12,9 @@ public class Gameboard : MonoBehaviour {
     public GameObject energyMeter;
     private EnergyMeter energyMeterScript;
 
+    public GameObject turnCounter;
+    private TurnCounter turnCounterScript;
+
     public GameObject cardPrefab;
 
     public GameObject weaponSlot;
@@ -27,6 +30,7 @@ public class Gameboard : MonoBehaviour {
 
         handScript = hand.GetComponent<Hand>();
         energyMeterScript = energyMeter.GetComponent<EnergyMeter>();
+        turnCounterScript = turnCounter.GetComponent<TurnCounter>();
 
         TilemapUtils.GenerateMap();
     }
@@ -42,6 +46,7 @@ public class Gameboard : MonoBehaviour {
         if (selectedCard != null) {
             if (cardUnderCursor == null) {
                 PlaceCard(selectedCard);
+                turnCounterScript.IncrementTurnCounter();
                 return;
             }
         }
@@ -50,6 +55,7 @@ public class Gameboard : MonoBehaviour {
             if(selectedCard == null) {
                 if (CardsData.IsTree(cardUnderCursor)) {
                     ChopTree(cardUnderCursor);
+                    turnCounterScript.IncrementTurnCounter();
                 }
                 return;
             }
@@ -61,10 +67,12 @@ public class Gameboard : MonoBehaviour {
         if (CardsData.IsFireLightingCard(selectedCard)) {
             if(CardsData.IsFuelCard(cardUnderCursor)) {
                 CreateCampfire(selectedCard, cardUnderCursor);
+                turnCounterScript.IncrementTurnCounter();
             }
         } else if (CardsData.IsCookableCard(selectedCard)) {
             if(CardsData.IsCampfire(cardUnderCursor)) {
                 CookCard(selectedCard);
+                turnCounterScript.IncrementTurnCounter();
             }
         }
     }
@@ -110,17 +118,16 @@ public class Gameboard : MonoBehaviour {
         var cardScript = cardUnderCursor.GetComponent<Card>();
         cardScript.InitialiseCard(CardTypes.CAMPFIRE);
         TilemapUtils.gameboardData[cardScript.tilemapPosition.x, cardScript.tilemapPosition.y] = cardScript.data;
+        turnCounterScript.AddCardToUpdateList(cardUnderCursor);
 
-        // Campfire light radius
         Vector3Int tileCell = grid.WorldToCell(cardUnderCursor.transform.position);
-        var tiles = TilemapUtils.GetTilesInRadius(tileCell, 2);
-        foreach (var tile in tiles) {
-            // Flag the tile, inidicating that it can change colour.
-            // By default it's set to "Lock Colour".
-            tilemap.SetTileFlags(tile, TileFlags.None);
+        TilemapUtils.LightTilesInRadius(tileCell, cardScript.data.lifetime);
+    }
 
-            // Set the colour.
-            tilemap.SetColor(tile, Color.red);
-        }
+    public void UpdateCard(GameObject card) {
+        Vector3Int tileCell = grid.WorldToCell(card.transform.position);
+        var cardScript = card.GetComponent<Card>();
+        TilemapUtils.UpdateTilesLightingInRadius(tileCell, cardScript.data.lifetime + 1, cardScript.data.lifetime);
+
     }
 }

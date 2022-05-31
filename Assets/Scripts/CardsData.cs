@@ -140,6 +140,7 @@ public static class CardsData {
         card.attack = 0;
         card.health = 3;
         card.defense = 0;
+        card.lifetime = 6;
         return card;
     }
 

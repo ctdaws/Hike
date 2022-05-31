@@ -12,6 +12,7 @@ public class Deck : MonoBehaviour {
     void Start() {
         handScript = hand.GetComponent<Hand>();
         GenerateDeck();
+        DrawCard();
     }
 
     void GenerateDeck() {
@@ -35,13 +36,19 @@ public class Deck : MonoBehaviour {
     }
 
     void OnMouseDown() {
+        // DrawCard();
+    }
+
+    public void DrawCard() {
         GameObject card = Instantiate(cardPrefab, Vector3.zero, Quaternion.identity, hand.transform);
 
-        card.GetComponent<Card>().InitialiseCard(c.Dequeue());
+        if (c.Count > 0) {
+            card.GetComponent<Card>().InitialiseCard(c.Dequeue());
 
-        float nextCardXPos = handScript.cards.Count * 1.5f;
-        card.transform.localPosition = new Vector3(nextCardXPos, 0f, handScript.transform.position.z);
+            float nextCardXPos = handScript.cards.Count * 1.5f;
+            card.transform.localPosition = new Vector3(nextCardXPos, 0f, handScript.transform.position.z);
 
-        handScript.cards.Add(card);
+            handScript.cards.Add(card);
+        }
     }
 }

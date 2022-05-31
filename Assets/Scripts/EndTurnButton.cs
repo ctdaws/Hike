@@ -2,19 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EndTurnButton : MonoBehaviour
-{
-public GameObject encounterSystem;
-private EncounterSystem encounterSystemScript;
+public class EndTurnButton : MonoBehaviour {
+    // public GameObject encounterSystem;
+    // private EncounterSystem encounterSystemScript;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        encounterSystemScript = encounterSystem.GetComponent<EncounterSystem>();
+    public GameObject turnCounter;
+    private TurnCounter turnCounterScript;
+
+    void Start() {
+        // encounterSystemScript = encounterSystem.GetComponent<EncounterSystem>();
+        turnCounterScript = turnCounter.GetComponent<TurnCounter>();
     }
 
     void OnMouseDown() {
-        encounterSystemScript.OnEndTurnButton();
+        // encounterSystemScript.OnEndTurnButton();
+        turnCounterScript.IncrementTurnCounter();
     }
 
 }

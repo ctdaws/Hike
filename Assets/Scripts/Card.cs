@@ -68,6 +68,7 @@ public class Card : MonoBehaviour {
             gameObject.transform.position = new Vector3(mouseWorldPos.x, mouseWorldPos.y, gameObject.transform.position.z);
         }
     }
+
     void OnMouseDown() {
         if (!isPlaced) {
             isSelected = true;

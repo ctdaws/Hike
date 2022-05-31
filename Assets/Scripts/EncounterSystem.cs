@@ -28,7 +28,7 @@ public class EncounterSystem : MonoBehaviour {
 
     void PlayerTurn() {
         state = EncounterState.PLAYERTURN;
-        turnCounterScript.IncrementTurnCounter();
+        // turnCounterScript.IncrementTurnCounter();
         // draw 1 card
         // TODO: add card to hand at start of turn instead of click to draw,
         // fix issue where it tries to add card to hand before deck queue is filled

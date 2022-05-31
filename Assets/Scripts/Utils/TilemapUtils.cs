@@ -130,6 +130,30 @@ public static class TilemapUtils {
         return cardScript.data;
     }
 
+    public static void LightTilesInRadius(Vector3Int tileCell, int radius) {
+        // Campfire light radius
+        var tiles = TilemapUtils.GetTilesInRadius(tileCell, radius);
+        foreach (var tile in tiles) {
+            // Flag the tile, inidicating that it can change colour.
+            // By default it's set to "Lock Colour".
+            tilemap.SetTileFlags(tile, TileFlags.None);
+
+            // Set the colour.
+            tilemap.SetColor(tile, Color.red);
+        }
+    }
+
+    public static void UpdateTilesLightingInRadius(Vector3Int tileCell, int oldRadius, int newRadius) {
+        var oldTiles = TilemapUtils.GetTilesInRadius(tileCell, oldRadius);
+        var newTiles = TilemapUtils.GetTilesInRadius(tileCell, newRadius);
+
+        var oldLightTiles = oldTiles.Except(newTiles);
+
+        foreach (var tile in oldLightTiles) {
+            tilemap.SetColor(tile, Color.white);
+        }
+    }
+
     public static void GenerateMap() {
         CardModel[,] mapData = new CardModel[14, 8];
 
