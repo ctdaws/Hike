@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Tilemaps;
@@ -19,6 +20,8 @@ public class Gameboard : MonoBehaviour {
 
     public GameObject weaponSlot;
 
+    private List<GameObject> cardsToUpdateOnEndTurn = new List<GameObject>();
+
     void Start() {
         TilemapUtils.tilemap = tilemap;
         TilemapUtils.grid = grid;
@@ -33,6 +36,8 @@ public class Gameboard : MonoBehaviour {
         turnCounterScript = turnCounter.GetComponent<TurnCounter>();
 
         TilemapUtils.GenerateMap();
+
+        EventManager.Instance.onEndTurn += UpdateCardsOnEndTurn;
     }
 
     void OnMouseDown() {
@@ -46,7 +51,7 @@ public class Gameboard : MonoBehaviour {
         if (selectedCard != null) {
             if (cardUnderCursor == null) {
                 PlaceCard(selectedCard);
-                turnCounterScript.IncrementTurnCounter();
+                EventManager.Instance.EndTurn();
                 return;
             }
         }
@@ -55,7 +60,7 @@ public class Gameboard : MonoBehaviour {
             if(selectedCard == null) {
                 if (CardsData.IsTree(cardUnderCursor)) {
                     ChopTree(cardUnderCursor);
-                    turnCounterScript.IncrementTurnCounter();
+                    EventManager.Instance.EndTurn();
                 }
                 return;
             }
@@ -67,12 +72,12 @@ public class Gameboard : MonoBehaviour {
         if (CardsData.IsFireLightingCard(selectedCard)) {
             if(CardsData.IsFuelCard(cardUnderCursor)) {
                 CreateCampfire(selectedCard, cardUnderCursor);
-                turnCounterScript.IncrementTurnCounter();
+                EventManager.Instance.EndTurn();
             }
         } else if (CardsData.IsCookableCard(selectedCard)) {
             if(CardsData.IsCampfire(cardUnderCursor)) {
                 CookCard(selectedCard);
-                turnCounterScript.IncrementTurnCounter();
+                EventManager.Instance.EndTurn();
             }
         }
     }
@@ -118,16 +123,24 @@ public class Gameboard : MonoBehaviour {
         var cardScript = cardUnderCursor.GetComponent<Card>();
         cardScript.InitialiseCard(CardTypes.CAMPFIRE);
         TilemapUtils.gameboardData[cardScript.tilemapPosition.x, cardScript.tilemapPosition.y] = cardScript.data;
-        turnCounterScript.AddCardToUpdateList(cardUnderCursor);
 
         Vector3Int tileCell = grid.WorldToCell(cardUnderCursor.transform.position);
         TilemapUtils.LightTilesInRadius(tileCell, cardScript.data.lifetime);
+
+        cardsToUpdateOnEndTurn.Add(cardUnderCursor);
     }
 
-    public void UpdateCard(GameObject card) {
+    public void UpdateCampfire(GameObject card) {
         Vector3Int tileCell = grid.WorldToCell(card.transform.position);
         var cardScript = card.GetComponent<Card>();
         TilemapUtils.UpdateTilesLightingInRadius(tileCell, cardScript.data.lifetime + 1, cardScript.data.lifetime);
+    }
 
+    private void UpdateCardsOnEndTurn() {
+        foreach (GameObject card in cardsToUpdateOnEndTurn) {
+            if (CardsData.IsCampfire(card)) {
+                UpdateCampfire(card);
+            }
+        }
     }
 }

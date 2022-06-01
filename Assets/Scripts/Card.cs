@@ -13,6 +13,8 @@ public class Card : MonoBehaviour {
     void Start() {
         col = gameObject.GetComponent<BoxCollider2D>();
         InitialiseCard(data.type);
+
+        EventManager.Instance.onEndTurn += OnEndTurn;
     }
 
     public void InitialiseCard(CardTypes cardType) {
@@ -74,5 +76,15 @@ public class Card : MonoBehaviour {
             isSelected = true;
             col.enabled = false;
         }
+    }
+
+    private void OnEndTurn() {
+        if (data.lifetime > 0) {
+            data.lifetime--;
+        }
+    }
+
+    private void OnDestroy() {
+        EventManager.Instance.onEndTurn -= OnEndTurn;
     }
 }
