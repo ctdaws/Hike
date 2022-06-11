@@ -15,6 +15,7 @@ public static class TilemapUtils {
     // Tilemap size in cell coordinates
     public static Vector3Int tilemapSize;
     public static GameObject cardPrefab;
+    public static GameObject enemyCardPrefab;
 
     public static bool IsCellInBounds(Vector3Int tileCell) {
         if (
@@ -27,6 +28,11 @@ public static class TilemapUtils {
         } else {
             return false;
         }
+    }
+
+    public static Vector3Int GetTileAtMousePosition() {
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        return grid.WorldToCell(mouseWorldPos);
     }
 
     public static CardModel GetTileDataAtMousePosition() {
@@ -49,7 +55,15 @@ public static class TilemapUtils {
         var tilesCoords = new List<Vector3Int>();
         foreach (var x in Enumerable.Range(0, (radius * 2) + 1)) {
             foreach (var y in Enumerable.Range(0, (radius * 2) + 1)) {
-                tilesCoords.Add(new Vector3Int(topLeftX + x, topLeftY - y, 0));
+                var tileX = topLeftX + x;
+                var tileY = topLeftY - y;
+
+                // Don't add centre cell
+                if (tileX == tileCell.x && tileY == tileCell.y) {
+                    continue;
+                }
+
+                tilesCoords.Add(new Vector3Int(tileX, tileY, 0));
             }
         }
 
@@ -74,6 +88,25 @@ public static class TilemapUtils {
         card.transform.position = tilemap.GetCellCenterWorld(tileCell) + new Vector3(0, 0, -1);
         card.transform.SetParent(tilemap.transform);
         cardScript.isPlaced = true;
+        card.GetComponent<BoxCollider2D>().enabled = false;
+        return true;
+    }
+
+    public static bool MoveCardToCell(GameObject card, Vector2Int nextCell) {
+        int normalisedCellX = tilemapPosition.x + nextCell.x;
+        int normalisedCellY = tilemapPosition.y + nextCell.y;
+        Vector3Int cell = new Vector3Int(normalisedCellX, normalisedCellY, 0);
+
+        if (!IsCellInBounds(cell)) {
+            return false;
+        }
+
+        var cardScript = card.GetComponent<Card>();
+        gameboardData[cardScript.tilemapPosition.x, cardScript.tilemapPosition.y] = null;
+
+        card.transform.position = tilemap.GetCellCenterWorld(cell) + new Vector3(0, 0, -1);
+        cardScript.tilemapPosition = nextCell;
+        gameboardData[cardScript.tilemapPosition.x, cardScript.tilemapPosition.y] = cardScript.data;
         card.GetComponent<BoxCollider2D>().enabled = false;
         return true;
     }
@@ -106,6 +139,32 @@ public static class TilemapUtils {
         return cardTransform.gameObject;
     }
 
+    public static GameObject GetCardAtCellPosition(Vector2Int cellPosition) {
+        int normalisedCellX = tilemapPosition.x + cellPosition.x;
+        int normalisedCellY = tilemapPosition.y + cellPosition.y;
+        Vector3Int cell = new Vector3Int(normalisedCellX, normalisedCellY, 0);
+
+        if (!IsCellInBounds(cell)) {
+            return null;
+        }
+
+        List<Transform> transforms = new List<Transform>();
+
+        // Get the transforms of all the Cards in play
+        foreach (Transform child in tilemap.transform) {
+            transforms.Add(child);
+        }
+
+        // Find the Card placed on the tile, if it exists
+        Transform cardTransform = transforms.Find(t => t.gameObject.GetComponent<Card>().tilemapPosition == cellPosition);
+
+        if (cardTransform == null) {
+            return null;
+        }
+
+        return cardTransform.gameObject;
+    }
+
     public static void PlaceCardAtCell(GameObject card, int cellX, int cellY) {
         int normalisedCellX = tilemapPosition.x + cellX;
         int normalisedCellY = tilemapPosition.y + cellY;
@@ -120,14 +179,27 @@ public static class TilemapUtils {
         }
     }
 
-    public static CardModel CreateCardAtCellPosition(CardTypes cardType, int cellX, int cellY) {
-        GameObject card = Object.Instantiate(cardPrefab, Vector3.zero, Quaternion.identity, tilemap.transform);
+    public static CardModel CreateCardAtCellPosition(CardTypes cardType, int cellX, int cellY, bool isEnemy = false) {
+        var prefab = isEnemy ? enemyCardPrefab : cardPrefab;
+        GameObject card = Object.Instantiate(prefab, Vector3.zero, Quaternion.identity, tilemap.transform);
         Card cardScript = card.GetComponent<Card>();
         cardScript.InitialiseCard(cardType);
         PlaceCardAtCell(card, cellX, cellY);
         cardScript.isPlaced = true;
         card.GetComponent<BoxCollider2D>().enabled = false;
         return cardScript.data;
+    }
+
+    public static Vector3Int ConvertCellPositionToTilemapPosition(Vector2Int cellPosition) {
+        int normalisedCellX = tilemapPosition.x + cellPosition.x;
+        int normalisedCellY = tilemapPosition.y + cellPosition.y;
+        return new Vector3Int(normalisedCellX, normalisedCellY, 0);
+    }
+
+    public static Vector2Int ConvertTilemapPositionToCellPosition(Vector3Int tileCell) {
+        int cellX = tileCell.x - tilemapPosition.x;
+        int cellY = tileCell.y - tilemapPosition.y;
+        return new Vector2Int(cellX, cellY);
     }
 
     public static void LightTilesInRadius(Vector3Int tileCell, int radius) {
@@ -154,6 +226,53 @@ public static class TilemapUtils {
         }
     }
 
+    public static bool IsEmptyTileCell(Vector2Int cell) {
+        if (gameboardData[cell.x, cell.y] == null) {
+            return true;
+        }
+         return false;
+    }
+
+    public static void AttackCard(GameObject attacker, Vector2Int cellPosition) {
+        var defender = GetCardAtCellPosition(cellPosition);
+
+        if (defender == null) {
+            return;
+        }
+
+        var attackingCardScript = attacker.GetComponent<Card>();
+        var defendingCardScript = defender.GetComponent<Card>();
+
+        defendingCardScript.data.health -= attackingCardScript.data.attack;
+        defendingCardScript.UpdateHealth();
+
+        if (defendingCardScript.data.health < 0) {
+            if (CardsData.IsCampCard(defender)) {
+                EventManager.Instance.EncounterFailed();
+            }
+            gameboardData[defendingCardScript.tilemapPosition.x, defendingCardScript.tilemapPosition.y] = null;
+            Object.Destroy(defender);
+        }
+    }
+
+    public static void AttackCard(GameObject attacker, GameObject defender) {
+        if (defender == null) {
+            return;
+        }
+
+        var attackingCardScript = attacker.GetComponent<Card>();
+        var defendingCardScript = defender.GetComponent<Card>();
+
+        defendingCardScript.data.health -= attackingCardScript.data.attack;
+        defendingCardScript.UpdateHealth();
+
+        if (defendingCardScript.data.health <= 0) {
+            gameboardData[defendingCardScript.tilemapPosition.x, defendingCardScript.tilemapPosition.y] = null;
+            Object.Destroy(defender);
+        }
+
+    }
+
     public static void GenerateMap() {
         CardModel[,] mapData = new CardModel[14, 8];
 
@@ -169,6 +288,8 @@ public static class TilemapUtils {
         mapData[13, 1] = CreateCardAtCellPosition(CardTypes.TREE, 13, 1);
         mapData[13, 2] = CreateCardAtCellPosition(CardTypes.TREE, 13, 2);
         mapData[13, 3] = CreateCardAtCellPosition(CardTypes.TREE, 13, 3);
+
+        mapData[0, 2] = CreateCardAtCellPosition(CardTypes.WOLF, 0, 2, true);
 
         gameboardData = mapData;
     }

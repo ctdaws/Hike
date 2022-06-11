@@ -6,7 +6,7 @@ public class TurnCounter : MonoBehaviour {
 
     void Start() {
         turnCounter = 0;
-        EventManager.Instance.onEndTurn += IncrementTurnCounter;
+        EventManager.Instance.onEndPlayerTurn += IncrementTurnCounter;
     }
 
     void Update() {

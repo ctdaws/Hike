@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Tilemaps;
@@ -17,10 +16,11 @@ public class Gameboard : MonoBehaviour {
     private TurnCounter turnCounterScript;
 
     public GameObject cardPrefab;
+    public GameObject enemyCardPrefab;
 
     public GameObject weaponSlot;
 
-    private List<GameObject> cardsToUpdateOnEndTurn = new List<GameObject>();
+    private bool isEncounterStart = true;
 
     void Start() {
         TilemapUtils.tilemap = tilemap;
@@ -30,17 +30,30 @@ public class Gameboard : MonoBehaviour {
         TilemapUtils.tilemapPosition = tilemap.cellBounds.position;
         TilemapUtils.tilemapSize = tilemap.cellBounds.size;
         TilemapUtils.cardPrefab = cardPrefab;
+        TilemapUtils.enemyCardPrefab = enemyCardPrefab;
 
         handScript = hand.GetComponent<Hand>();
         energyMeterScript = energyMeter.GetComponent<EnergyMeter>();
         turnCounterScript = turnCounter.GetComponent<TurnCounter>();
 
-        TilemapUtils.GenerateMap();
+        EventManager.Instance.onPlayerTurn += ClearEncounterStartFlag;
 
-        EventManager.Instance.onEndTurn += UpdateCardsOnEndTurn;
+        TilemapUtils.GenerateMap();
     }
 
     void OnMouseDown() {
+        if (isEncounterStart) {
+            var tile = TilemapUtils.GetTileAtMousePosition();
+            if (TilemapUtils.IsCellInBounds(tile)) {
+                var cell = TilemapUtils.ConvertTilemapPositionToCellPosition(tile);
+                if (TilemapUtils.IsEmptyTileCell(cell)) {
+                    TilemapUtils.CreateCardAtCellPosition(CardTypes.CAMP, cell.x, cell.y);
+                    EventManager.Instance.PlayerTurn();
+                }
+                return;
+            }
+        }
+
         var selectedCard = handScript.GetSelectedCard();
         var cardUnderCursor = TilemapUtils.GetCardAtMousePosition();
 
@@ -51,7 +64,7 @@ public class Gameboard : MonoBehaviour {
         if (selectedCard != null) {
             if (cardUnderCursor == null) {
                 PlaceCard(selectedCard);
-                EventManager.Instance.EndTurn();
+                EventManager.Instance.EndPlayerTurn();
                 return;
             }
         }
@@ -59,9 +72,13 @@ public class Gameboard : MonoBehaviour {
         if (cardUnderCursor != null) {
             if(selectedCard == null) {
                 if (CardsData.IsTree(cardUnderCursor)) {
-                    ChopTree(cardUnderCursor);
-                    EventManager.Instance.EndTurn();
+                    handScript.CreateCardInHand(CardTypes.WOOD);
                 }
+
+                var weaponCard = weaponSlot.transform.GetChild(0).gameObject;
+                TilemapUtils.AttackCard(weaponCard, cardUnderCursor);
+                energyMeterScript.ProcessEnergyCost(weaponCard);
+                EventManager.Instance.EndPlayerTurn();
                 return;
             }
         }
@@ -72,14 +89,18 @@ public class Gameboard : MonoBehaviour {
         if (CardsData.IsFireLightingCard(selectedCard)) {
             if(CardsData.IsFuelCard(cardUnderCursor)) {
                 CreateCampfire(selectedCard, cardUnderCursor);
-                EventManager.Instance.EndTurn();
+                EventManager.Instance.EndPlayerTurn();
             }
         } else if (CardsData.IsCookableCard(selectedCard)) {
             if(CardsData.IsCampfire(cardUnderCursor)) {
                 CookCard(selectedCard);
-                EventManager.Instance.EndTurn();
+                EventManager.Instance.EndPlayerTurn();
             }
         }
+    }
+
+    private void ClearEncounterStartFlag() {
+        isEncounterStart = false;
     }
 
     private void PlaceCard(GameObject card) {
@@ -92,19 +113,6 @@ public class Gameboard : MonoBehaviour {
 
             handScript.RemoveCard(card);
         }
-    }
-
-    private void ChopTree(GameObject tree) {
-        var cardScript = tree.GetComponent<Card>();
-
-        TilemapUtils.gameboardData[cardScript.tilemapPosition.x, cardScript.tilemapPosition.y] = new CardModel();
-
-        Destroy(tree);
-
-        var weaponCard = weaponSlot.transform.GetChild(0).gameObject;
-        energyMeterScript.ProcessEnergyCost(weaponCard);
-
-        handScript.CreateCardInHand(CardTypes.WOOD);
     }
 
     private void CookCard(GameObject card) {
@@ -126,21 +134,5 @@ public class Gameboard : MonoBehaviour {
 
         Vector3Int tileCell = grid.WorldToCell(cardUnderCursor.transform.position);
         TilemapUtils.LightTilesInRadius(tileCell, cardScript.data.lifetime);
-
-        cardsToUpdateOnEndTurn.Add(cardUnderCursor);
-    }
-
-    public void UpdateCampfire(GameObject card) {
-        Vector3Int tileCell = grid.WorldToCell(card.transform.position);
-        var cardScript = card.GetComponent<Card>();
-        TilemapUtils.UpdateTilesLightingInRadius(tileCell, cardScript.data.lifetime + 1, cardScript.data.lifetime);
-    }
-
-    private void UpdateCardsOnEndTurn() {
-        foreach (GameObject card in cardsToUpdateOnEndTurn) {
-            if (CardsData.IsCampfire(card)) {
-                UpdateCampfire(card);
-            }
-        }
     }
 }

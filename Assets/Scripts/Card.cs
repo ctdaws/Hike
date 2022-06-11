@@ -8,59 +8,78 @@ public class Card : MonoBehaviour {
     public Vector2Int tilemapPosition;
 
     private BoxCollider2D col;
-    public TMPro.TextMeshProUGUI textMesh;
+    public TMPro.TextMeshProUGUI cardName;
+    public TMPro.TextMeshProUGUI health;
+    public TMPro.TextMeshProUGUI attack;
 
-    void Start() {
+    private void Start() {
         col = gameObject.GetComponent<BoxCollider2D>();
         InitialiseCard(data.type);
 
-        EventManager.Instance.onEndTurn += OnEndTurn;
+        EventManager.Instance.onEndPlayerTurn += onEndPlayerTurn;
     }
 
     public void InitialiseCard(CardTypes cardType) {
         switch (cardType) {
+            case CardTypes.CAMP:
+                data = CardsData.getCamp();
+                cardName.text = "Camp";
+                health.text = data.health.ToString();
+                break;
             case CardTypes.TARP:
                 data = CardsData.getTarp();
-                textMesh.text = "Tarp";
+                cardName.text = "Tarp";
+                health.text = data.health.ToString();
                 break;
             case CardTypes.ENERGY_BAR:
                 data = CardsData.getEnergyBar();
-                textMesh.text = "Energy Bar";
+                cardName.text = "Energy Bar";
                 break;
             case CardTypes.FIRELIGHTER:
                 data = CardsData.getFirelighter();
-                textMesh.text = "Firelighter";
+                cardName.text = "Firelighter";
                 break;
             case CardTypes.UNCOOKED_BEANS:
                 data = CardsData.getUncookedBeans();
-                textMesh.text = "Uncooked Beans";
+                cardName.text = "Uncooked Beans";
                 break;
             case CardTypes.COOKED_BEANS:
                 data = CardsData.getCookedBeans();
-                textMesh.text = "Cooked Beans";
+                cardName.text = "Cooked Beans";
                 break;
             case CardTypes.TREE:
                 data = CardsData.getTree();
-                textMesh.text = "Tree";
+                cardName.text = "Tree";
+                health.text = data.health.ToString();
+                attack.text = "";
                 break;
             case CardTypes.CAMPFIRE:
                 data = CardsData.getCampfire();
-                textMesh.text = "Campfire";
+                cardName.text = "Campfire";
+                health.text = data.health.ToString();
                 break;
             case CardTypes.AXE:
                 data = CardsData.getAxe();
-                textMesh.text = "Axe";
+                cardName.text = "Axe";
+                attack.text = data.attack.ToString();
                 break;
             case CardTypes.WOOD:
                 data = CardsData.getWood();
-                textMesh.text = "Wood";
+                cardName.text = "Wood";
+                health.text = data.health.ToString();
+                break;
+            case CardTypes.WOLF:
+                data = CardsData.getWolf();
+                cardName.text = "Wolf";
+                health.text = data.health.ToString();
+                attack.text = data.attack.ToString();
                 break;
         }
     }
 
     // TODO: calling update just for this may be bad for performance,
     // though not worth worrying about this yet as all this code may get deleted
-    void Update() {
+    private void Update() {
         if (isPlaced) {
             isSelected = false;
         }
@@ -71,20 +90,35 @@ public class Card : MonoBehaviour {
         }
     }
 
-    void OnMouseDown() {
+    private void OnMouseDown() {
         if (!isPlaced) {
             isSelected = true;
             col.enabled = false;
         }
     }
 
-    private void OnEndTurn() {
+    private void onEndPlayerTurn() {
         if (data.lifetime > 0) {
             data.lifetime--;
+
+            if (CardsData.IsCampfire(gameObject)) {
+                var tileCell = TilemapUtils.ConvertCellPositionToTilemapPosition(tilemapPosition);
+                TilemapUtils.UpdateTilesLightingInRadius(tileCell, data.lifetime + 1, data.lifetime);
+            }
         }
     }
 
+
+
+    public void UpdateHealth() {
+        health.text = data.health.ToString();
+    }
+
     private void OnDestroy() {
-        EventManager.Instance.onEndTurn -= OnEndTurn;
+        if (CardsData.IsCampfire(gameObject)) {
+            var tileCell = TilemapUtils.ConvertCellPositionToTilemapPosition(tilemapPosition);
+            TilemapUtils.UpdateTilesLightingInRadius(tileCell, data.lifetime, 0);
+        }
+        EventManager.Instance.onEndPlayerTurn -= onEndPlayerTurn;
     }
 }

@@ -14,7 +14,7 @@ public class Deck : MonoBehaviour {
         GenerateDeck();
         DrawCard();
 
-        EventManager.Instance.onEndTurn += DrawCard;
+        EventManager.Instance.onEndPlayerTurn += DrawCard;
     }
 
     void GenerateDeck() {
