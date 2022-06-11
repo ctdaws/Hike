@@ -6,6 +6,8 @@ public class AnnouncementMessage : MonoBehaviour {
     void Start() {
         EventManager.Instance.onEncounterStart += ShowEncounterStartMessage;
         EventManager.Instance.onEncounterFailed += ShowEncounterFailedMessage;
+        EventManager.Instance.onEncounterSucceeded += ShowEncounterSucceededMessage;
+        EventManager.Instance.onStartOfNight += ShowStartOfNightMessage;
         EventManager.Instance.onPlayerTurn += ClearMessage;
     }
 
@@ -19,6 +21,10 @@ public class AnnouncementMessage : MonoBehaviour {
 
     void ShowEncounterSucceededMessage() {
         textMesh.text = "You won";
+    }
+
+    void ShowStartOfNightMessage() {
+        textMesh.text = "Start of night";
     }
 
     void ClearMessage() {

@@ -11,6 +11,7 @@ public class EventManager : MonoBehaviour {
     public event Action onEncounterStart;
     public event Action onEncounterFailed;
     public event Action onEncounterSucceeded;
+    public event Action onStartOfNight;
 
     private void Awake() {
         if (_instance != null && _instance != this) {
@@ -42,5 +43,9 @@ public class EventManager : MonoBehaviour {
 
     public void EncounterSucceeded() {
         onEncounterSucceeded?.Invoke();
+    }
+
+    public void StartOfNight() {
+        onStartOfNight?.Invoke();
     }
 }

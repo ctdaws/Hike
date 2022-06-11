@@ -185,7 +185,7 @@ PrefabInstance:
     - target: {fileID: 3961988455924517354, guid: 3c825ca043609445ea180b7a6d8acd98,
         type: 3}
       propertyPath: data.type
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8733127398427005178, guid: 3c825ca043609445ea180b7a6d8acd98,
         type: 3}
@@ -328,8 +328,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.28, y: 0.97}
-  m_SizeDelta: {x: 13.8376, y: 7.8852}
+  m_AnchoredPosition: {x: 7.2638, y: 2.012}
+  m_SizeDelta: {x: 2.6759, y: 1.5451}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &137066826
 MonoBehaviour:
@@ -378,8 +378,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15
-  m_fontSizeBase: 15
+  m_fontSize: 3
+  m_fontSizeBase: 3
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
